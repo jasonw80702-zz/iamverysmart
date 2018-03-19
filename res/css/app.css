@@ -1,0 +1,14 @@
+#title {
+	text-align: center;
+}
+
+.label {
+	text-align: right;
+	margin-top: 7px;
+}
+
+#result {
+	border: 1px solid black;
+	padding: 8px;
+	display: none;
+}
