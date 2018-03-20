@@ -3,6 +3,11 @@ $(document).ready(function() {
 	var key = "e23ef711402f05ed77a453b933ea3b8a";
 	var url = "http://words.bighugelabs.com/api/2/";
 
+	var SYN = "syn";
+	var SIM = "sim";
+
+	var max = "";
+
 	createUrlForWord = function(word) {
 		return url + key + "/" + word + "/json";
 	};
@@ -11,27 +16,33 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'GET',
 			url: url,
+			async: false,
 			dataType: "json",
 			success: callback,
 			error: function(xhr, ajaxOptions, thrownError) {
-				var status = xhr.status;
-				var statusText = xhr.statusText;
-				debugger;
+				handleError(xhr.status, xhr.statusText);
 			}
 		});
+		console.log("hello");
 	};
 
 	callback = function(data) {
-		// data is already in JSON format
-		debugger;
-		// todo: convert data from format wordType|compareType|word 
-		// into list of objects
+		for (var l in data) {
+			var synonyms = data[l][SYN];
+			for (var i = 0; i < synonyms.length; i++) {
+				if (synonyms[i].length > max.length) {
+					max = synonyms[i];
+				}
+			}
+			break;
+		}
 	};
 
 	handleError = function(status, statusText) {
 		// handle error
 		// status: 404
 		// statusText: Not Found
+		debugger;
 	};
 
 	displayText = function(result) {
@@ -39,14 +50,26 @@ $(document).ready(function() {
 		$("#result").show();
 	};
 
+	processWords = function(words) {
+		var result = [];
+		for (var i = 0; i < words.length; i++) {
+			max = "";
+			var edit = words[i].replace(/[^A-Za-z_]/g, "");
+			getJSONRequest(createUrlForWord(edit));
+			debugger;
+			max.length === 0 ? result.push(words[i]) : result.push(max);
+		}
+		return result;
+	};
+
 	$("#submit-btn").click(function() {
 		var content = $("#content").val();
 		if (content) {
 			// loop through all words in setence
-			var a = createUrlForWord("fsasdasdasd");
-			getJSONRequest(a);
-			var result;
-			displayText(result);
+			var words = content.split(" ");
+			var result = processWords(words);
+			debugger;
+			displayText(result.join(' '));
 		}
 	});
 });
