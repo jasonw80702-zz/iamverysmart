@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var key = "e23ef711402f05ed77a453b933ea3b8a";
+	var key = "e23ef711402f05ed77a453b933ea3b8a"; // TODO: move to server side
 	var url = "http://words.bighugelabs.com/api/2/";
 
 	var SYN = "syn";
@@ -16,6 +16,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'GET',
 			url: url,
+			// need this to wait for response
 			async: false,
 			dataType: "json",
 			success: callback,
@@ -23,9 +24,9 @@ $(document).ready(function() {
 				handleError(xhr.status, xhr.statusText);
 			}
 		});
-		console.log("hello");
 	};
 
+	// ALG1: based on longest length synonym
 	callback = function(data) {
 		for (var l in data) {
 			var synonyms = data[l][SYN];
@@ -38,10 +39,10 @@ $(document).ready(function() {
 		}
 	};
 
+	// TODO: ALG2: random synonyms and create multiple results
+
 	handleError = function(status, statusText) {
-		// handle error
-		// status: 404
-		// statusText: Not Found
+		console.log("Status: {" + status + "} StatusText: {" + statusText + "}")
 		debugger;
 	};
 
@@ -56,7 +57,6 @@ $(document).ready(function() {
 			max = "";
 			var edit = words[i].replace(/[^A-Za-z_]/g, "");
 			getJSONRequest(createUrlForWord(edit));
-			debugger;
 			max.length === 0 ? result.push(words[i]) : result.push(max);
 		}
 		return result;
@@ -65,10 +65,9 @@ $(document).ready(function() {
 	$("#submit-btn").click(function() {
 		var content = $("#content").val();
 		if (content) {
-			// loop through all words in setence
+			// loop through all words in sentence
 			var words = content.split(" ");
 			var result = processWords(words);
-			debugger;
 			displayText(result.join(' '));
 		}
 	});
@@ -77,3 +76,5 @@ $(document).ready(function() {
 
 // todo: modal pop up to select which words to smartify
 // make one call, then show modal of words to get synonyms of
+// handle punctuation
+// add recent searched sentences??
